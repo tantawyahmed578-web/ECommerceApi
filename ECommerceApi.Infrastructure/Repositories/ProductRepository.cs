@@ -18,7 +18,32 @@ namespace ECommerceApi.Infrastructure.Repositories
         public async Task<IReadOnlyList<Product>> GetByCategoryAsync(int categoryId) =>
          await _dbSet.Where(p => p.CategoryId == categoryId).ToListAsync();
 
+
         public async Task<IReadOnlyList<Product>> SearchByNameAsync(string keyword) =>
             await _dbSet.Where(p => p.Name.Contains(keyword)).ToListAsync();
+
+        public async Task<(IReadOnlyList<Product> Items, int TotalCount)> GetPagedAsync(
+          int pageNumber, int pageSize, int? categoryId, string? searchTerm)
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                query = query.Where(p => p.Name.Contains(searchTerm));
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(p => p.Name)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
     }
 }
+
+    

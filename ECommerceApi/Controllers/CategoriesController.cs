@@ -1,4 +1,4 @@
-﻿using ECommerceApi.Application.DTOs;
+﻿using ECommerceApi.Application.DTOs.CategoryDto;
 using ECommerceApi.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

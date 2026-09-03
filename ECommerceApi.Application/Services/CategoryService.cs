@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ECommerceApi.Application.DTOs;
+using ECommerceApi.Application.DTOs.CategoryDto;
 using ECommerceApi.Application.Interfaces;
 using ECommerceApi.Domain.Entities;
 using ECommerceApi.Domain.Exceptions;

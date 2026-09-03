@@ -11,5 +11,6 @@ namespace ECommerceApi.Domain.Interfaces
     {
         Task<IReadOnlyList<Product>> GetByCategoryAsync(int categoryId);
         Task<IReadOnlyList<Product>> SearchByNameAsync(string name);
+        Task<(IReadOnlyList<Product> Items, int TotalCount)> GetPagedAsync( int pageNumber, int pageSize, int? categoryId, string? searchTerm);
     }
 }

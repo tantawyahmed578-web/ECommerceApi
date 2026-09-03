@@ -41,4 +41,11 @@ public class AuthController : ControllerBase
 
         return Ok(new { customerId, email, name });
     }
+    [Authorize]
+    [HttpGet("claims")]
+    public IActionResult GetClaims()
+    {
+        var claims = User.Claims.Select(c => new { c.Type, c.Value });
+        return Ok(claims);
+    }
 }

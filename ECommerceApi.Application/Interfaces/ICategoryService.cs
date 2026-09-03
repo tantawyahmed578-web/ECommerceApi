@@ -1,4 +1,4 @@
-﻿using ECommerceApi.Application.DTOs;
+﻿using ECommerceApi.Application.DTOs.CategoryDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using ECommerceApi.Application.DTOs;
+using ECommerceApi.Application.DTOs.pagination_and_filtering;
+using ECommerceApi.Application.DTOs.ProductDto;
 using ECommerceApi.Application.Interfaces;
 using ECommerceApi.Domain.Entities;
 using ECommerceApi.Domain.Exceptions;
@@ -69,6 +71,20 @@ namespace ECommerceApi.Application.Services
 
             _unitOfWork.Products.Delete(product);
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<PagedResultDto<ProductDto>> GetPagedAsync(ProductQueryParameters queryParams)
+        {
+            var (items, totalCount) = await _unitOfWork.Products.GetPagedAsync(
+                queryParams.PageNumber, queryParams.PageSize, queryParams.CategoryId, queryParams.SearchTerm);
+
+            return new PagedResultDto<ProductDto>
+            {
+                Items = _mapper.Map<List<ProductDto>>(items),
+                TotalCount = totalCount,
+                PageNumber = queryParams.PageNumber,
+                PageSize = queryParams.PageSize
+            };
         }
     }
 }

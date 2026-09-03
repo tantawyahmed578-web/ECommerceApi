@@ -1,4 +1,6 @@
 ﻿using ECommerceApi.Application.DTOs;
+using ECommerceApi.Application.DTOs.pagination_and_filtering;
+using ECommerceApi.Application.DTOs.ProductDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +17,6 @@ namespace ECommerceApi.Application.Interfaces
         Task<ProductDto> CreateAsync(CreateProductDto dto);
         Task UpdateAsync(int id, UpdateProductDto dto);
         Task DeleteAsync(int id);
+        Task<PagedResultDto<ProductDto>> GetPagedAsync(ProductQueryParameters queryParams);
     }
 }
