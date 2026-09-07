@@ -8,6 +8,7 @@ namespace ECommerceApi.Application.DTOs.OrderItemDto
 {
     public class CreateOrderDto
     {
-        public List<CreateOrderItemDto> Items { get; set; } = new();
+     
+        public string BasketId { get; set; } = string.Empty;
     }
 }

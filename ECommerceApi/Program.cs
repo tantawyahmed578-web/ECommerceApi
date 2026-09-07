@@ -11,6 +11,9 @@ using ECommerceApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using StackExchange.Redis;
+using ECommerceApi.Domain.Interfaces;
+using ECommerceApi.Infrastructure.Repositories;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +35,17 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+// 1. تسجيل اتصال Redis
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var redisConfig = builder.Configuration.GetConnectionString("Redis")
+                      ?? throw new InvalidOperationException("Redis connection string is missing.");
+    var configuration = ConfigurationOptions.Parse(redisConfig, true);
+    return ConnectionMultiplexer.Connect(configuration);
+});
+
+// 2. تسجيل مستودع الـ Basket
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!); 
