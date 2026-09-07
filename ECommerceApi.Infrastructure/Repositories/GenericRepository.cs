@@ -16,8 +16,7 @@ namespace ECommerceApi.Infrastructure.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public async Task<T?> GetByIdAsync(int id) => await _dbSet.FindAsync(id); // Use FindAsync for primary key lookup
-
+        public virtual async Task<T?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
         public async Task<IReadOnlyList<T>> GetAllAsync() => await _dbSet.ToListAsync(); // Use ToListAsync to retrieve all entities
 
         public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity); // Use AddAsync to add a new entity

@@ -7,13 +7,14 @@ using ECommerceApi.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using ECommerceApi.Application.Interfaces;
 using ECommerceApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Serilog;
 
+Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 // --- Database (Day 3) ---
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -88,6 +89,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
+
+
 // --- Global Exception Handling Middleware ---
 app.Use(async (context, next) =>
 {
@@ -140,6 +144,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 

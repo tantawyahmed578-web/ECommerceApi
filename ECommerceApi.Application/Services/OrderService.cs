@@ -4,6 +4,7 @@ using ECommerceApi.Application.Interfaces;
 using ECommerceApi.Domain.Entities;
 using ECommerceApi.Domain.Exceptions;
 using ECommerceApi.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,15 @@ namespace ECommerceApi.Application.Services
 {
     public class OrderService : IOrderService
     {
-
+        private readonly ILogger<OrderService> _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<OrderService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _logger = logger;
         }
         public async Task<OrderDto> CreateOrderAsync(int customerId, CreateOrderDto dto)
         {
@@ -42,6 +44,7 @@ namespace ECommerceApi.Application.Services
 
             await _unitOfWork.Orders.AddAsync(order);
             await _unitOfWork.SaveChangesAsync();
+            _logger.LogInformation("Order {OrderId} placed by customer {CustomerId}, total {Total}", order.Id, customerId, order.Total); // Log the order placement with total amount
 
             return _mapper.Map<OrderDto>(order);
         }

@@ -4,20 +4,25 @@ using ECommerceApi.Application.Interfaces;
 using ECommerceApi.Domain.Entities;
 using ECommerceApi.Domain.Exceptions;
 using ECommerceApi.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace ECommerceApi.Application.Services;
 
 public class AuthService : IAuthService
 {
+    private readonly ILogger<AuthService> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly ITokenService _tokenService;
 
-    public AuthService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService)
+
+    public AuthService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService, ILogger<AuthService> logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _tokenService = tokenService;
+        _logger = logger;
+
     }
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
@@ -33,6 +38,7 @@ public class AuthService : IAuthService
         await _unitOfWork.SaveChangesAsync();
 
         var token = _tokenService.GenerateToken(customer);
+        _logger.LogInformation("New customer registered: {CustomerId}, {Email}", customer.Id, customer.Email); // Log the registration event
         return new AuthResponseDto { Token = token, Customer = _mapper.Map<CustomerDto>(customer) };
     }
 

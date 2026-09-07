@@ -10,5 +10,6 @@ namespace ECommerceApi.Domain.Interfaces
     public interface IOrderRepository : IGenericRepository<Order>
     {
         Task<IReadOnlyList<Order>> GetByCustomerAsync(int customerId);
+
     }
 }
