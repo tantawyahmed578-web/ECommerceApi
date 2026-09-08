@@ -29,6 +29,7 @@ public class TokenService : ITokenService
             new(JwtRegisteredClaimNames.Sub, customer.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, customer.Email),
             new(ClaimTypes.Name, customer.Name),
+            new(ClaimTypes.Role, customer.Role),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())  
         };
 

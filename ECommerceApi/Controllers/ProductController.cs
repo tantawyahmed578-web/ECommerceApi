@@ -2,6 +2,7 @@ using ECommerceApi.Application.DTOs;
 using ECommerceApi.Application.DTOs.pagination_and_filtering;
 using ECommerceApi.Application.DTOs.ProductDto;
 using ECommerceApi.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceApi.Controllers
@@ -21,6 +22,7 @@ namespace ECommerceApi.Controllers
         /// Gets all products
         /// </summary>
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PagedResultDto<ProductDto>>> GetAll([FromQuery] ProductQueryParameters queryParams) // Changed return type to PagedResultDto<ProductDto>
         {
             var result = await _productService.GetPagedAsync(queryParams);
