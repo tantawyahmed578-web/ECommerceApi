@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using StackExchange.Redis;
-using ECommerceApi.Domain.Interfaces;
-using ECommerceApi.Infrastructure.Repositories;
 using ECommerceApi.Middlewares;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day).CreateLogger();
@@ -106,6 +104,24 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // تأكد من تغيير AppDbContext لاسم كلاس قاعدة البيانات الفعلي في مشروعك
+        var context = services.GetRequiredService<AppDbContext>();
+
+        // هذا السطر يقوم بإنشاء الداتابيز وتطبيق كل الجداول تلقائياً
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "حدث خطأ أثناء إنشاء قاعدة البيانات.");
+    }
+}
 
 app.UseExceptionHandler();
 

@@ -1,22 +1,7 @@
-version: '3.4'
+version: '3.8'
 
 services:
-  ecommerce-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      # ركز هنا: غيرنا الـ Server لـ sqlserver عشان يشوف الكونتينر التاني
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ECommerceApiDb;User Id=sa;Password=YourStrong@Pass123;TrustServerCertificate=True;
-      # وهنا خلينا الـ Redis يبص على الكونتينر بتاعه
-      - ConnectionStrings__Redis=redis:6379
-    depends_on:
-      - sqlserver
-      - redis
-
+  # حاوية قاعدة البيانات
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -24,13 +9,25 @@ services:
       - SA_PASSWORD=YourStrong@Pass123
     ports:
       - "1433:1433"
-    volumes:
-      - sqldata:/var/opt/mssql
 
+  # حاوية التخزين المؤقت
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
 
-volumes:
-  sqldata:
+  # حاوية مشروعك
+  ecommerce-api:
+    build:
+      context: .
+      dockerfile: ECommerceApi/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # لاحظ: الدوكر بيقرا المتغيرات دي وبيبدلها باللي في appsettings.json
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ECommerceApiDb;User Id=sa;Password=YourStrong@Pass123;TrustServerCertificate=True;
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      - sqlserver
+      - redis
