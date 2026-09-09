@@ -14,6 +14,7 @@ using Serilog;
 using StackExchange.Redis;
 using ECommerceApi.Domain.Interfaces;
 using ECommerceApi.Infrastructure.Repositories;
+using ECommerceApi.Middlewares;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 var builder = WebApplication.CreateBuilder(args);
@@ -101,7 +102,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 app.UseSerilogRequestLogging();
 
