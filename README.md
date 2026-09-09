@@ -48,6 +48,24 @@ The solution is divided into four strictly decoupled layers:
 3. **`Infrastructure Layer`**: Implements EF Core, DbContext, and Repositories. *Depends on Domain & Application.*
 4. **`API Layer`**: The presentation layer containing Controllers, Middlewares, and DI wiring. *Depends on all layers.*
 
+   ## 🌐 API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/account/register` | Register a new user |
+| `POST` | `/api/account/login` | Login and receive JWT token |
+| `GET` | `/api/products` | Get all products (with filtering/sorting) |
+| `GET` | `/api/products/{id}` | Get product by ID |
+| `GET` | `/api/products/categories`| Get all categories |
+| `POST` | `/api/basket` | Add item to cart |
+| `GET` | `/api/basket` | Get current user's cart |
+| `DELETE`| `/api/basket/{id}` | Remove item from cart |
+| `POST` | `/api/orders` | Place a new order |
+| `GET` | `/api/orders` | Get orders for current user |
+| `GET` | `/api/orders/{id}` | Get order by ID |
+| `GET` | `/api/admin/orders` | Get all orders (Admin only) |
+| `PATCH` | `/api/admin/orders/{id}/status` | Update order status (Admin only) |
+
 ## 🚀 Getting Started
 
 ### Option A: Run with Docker (Recommended)
