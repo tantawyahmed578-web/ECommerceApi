@@ -1,104 +1,80 @@
-# ECommerce REST API
+<div align="center">
 
-A full-featured e-commerce backend API built with **ASP.NET Core Web API**
-following **Onion Architecture** for clean separation of concerns.
+# 🛍️ E-Commerce REST API
 
-## Features
+*A robust, production-ready backend API for e-commerce platforms, built with ASP.NET Core 8 and following the principles of Onion Architecture.*
 
-- JWT Authentication with role-based authorization (Customer / Admin)
-- Product catalog with categories and filtering
-- Shopping cart management
-- Checkout flow and order processing
-- Admin dashboard for order tracking and management
-- Generic Repository & Specification patterns for flexible, testable data access
-- AutoMapper for clean object mapping
-- Unit tests for core business logic validation
-- Global exception handling middleware
-- Entity Framework Core with SQL Server
-- Swagger/OpenAPI documentation
+![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL_Server-EF_Core-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-Caching-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![Architecture](https://img.shields.io/badge/Architecture-Onion-00C7B7?style=for-the-badge)
 
-## Tech Stack
+</div>
 
-| Layer | Technology |
+---
+
+## 📋 Overview
+
+This project provides a comprehensive backend solution for e-commerce applications. By enforcing **Onion Architecture**, it ensures a clean separation of concerns, resulting in a highly testable, maintainable, and scalable system where the core business logic is completely isolated from external frameworks and infrastructure.
+
+## ✨ Key Features
+
+* **📦 Containerized Ready:** Seamless orchestration of the API, SQL Server, and Redis using Docker Compose.
+* **🛡️ Clean Architecture:** Strict adherence to Onion Architecture, utilizing Generic Repository and Specification patterns.
+* **🔒 Secure Authentication:** JWT-based authentication with role-based authorization (Admin/Customer).
+* **⚡ High Performance:** Caching integration via Redis to optimize read-heavy operations.
+* **🚦 Centralized Error Handling:** Global exception handling via .NET 8 `IExceptionHandler` for consistent API responses.
+* **📝 Structured Logging:** Configured with Serilog for comprehensive tracking and debugging.
+* **🛒 E-Commerce Workflows:** Full product catalog, category filtering, cart management, and order processing.
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
 |---|---|
-| Framework | ASP.NET Core Web API (.NET 8) |
-| Database | SQL Server + Entity Framework Core |
-| Authentication | JWT Bearer Token |
-| Mapping | AutoMapper |
-| Testing | xUnit |
-| Patterns | Onion Architecture, Generic Repository, Specification Pattern |
+| **Core Framework** | ASP.NET Core Web API (.NET 8) |
+| **Data Access** | Entity Framework Core, SQL Server 2022 |
+| **Caching** | Redis (Alpine) |
+| **DevOps & Deployment** | Docker, Docker Compose |
+| **Libraries** | AutoMapper, Serilog, Swagger/OpenAPI |
+| **Testing** | xUnit |
 
-## Project Structure
+## 🏗️ Architecture
 
-```
-ECommerceApi/
-├── ECommerceApi/                  # Presentation Layer (Controllers, Middleware, Program.cs)
-├── ECommerceApi.Application/      # Application Layer (Services, DTOs, Interfaces)
-├── ECommerceApi.Domain/           # Domain Layer (Entities, Core Interfaces)
-└── ECommerceApi.Infrastructure/   # Infrastructure Layer (EF Core, Repositories, DbContext)
-```
+The solution is divided into four strictly decoupled layers:
 
-## Architecture
+1. **`Domain Layer`**: Contains entities and domain exceptions. *Zero external dependencies.*
+2. **`Application Layer`**: Contains business logic, DTOs, interfaces, and custom exceptions. *Depends only on Domain.*
+3. **`Infrastructure Layer`**: Implements EF Core, DbContext, and Repositories. *Depends on Domain & Application.*
+4. **`API Layer`**: The presentation layer containing Controllers, Middlewares, and DI wiring. *Depends on all layers.*
 
-The project follows **Onion Architecture** — all dependencies point inward toward the Domain layer:
-
-- **Domain** — Entities and core interfaces. No external dependencies.
-- **Application** — Business logic, DTOs, and service interfaces. Depends only on Domain.
-- **Infrastructure** — EF Core implementation, Generic Repository, Unit of Work, and DbContext. Depends on Domain + Application.
-- **API** — Controllers, middleware, and DI wiring. Depends on all layers.
-
-## API Endpoints
+   ## 🌐 API Endpoints
 
 | Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/account/register` | Register a new user |
-| POST | `/api/account/login` | Login and receive JWT token |
-| GET | `/api/products` | Get all products (with filtering/sorting) |
-| GET | `/api/products/{id}` | Get product by ID |
-| GET | `/api/products/categories` | Get all categories |
-| POST | `/api/basket` | Add item to cart |
-| GET | `/api/basket` | Get current user's cart |
-| DELETE | `/api/basket/{id}` | Remove item from cart |
-| POST | `/api/orders` | Place a new order |
-| GET | `/api/orders` | Get orders for current user |
-| GET | `/api/orders/{id}` | Get order by ID |
-| GET | `/api/admin/orders` | Get all orders (Admin only) |
-| PATCH | `/api/admin/orders/{id}/status` | Update order status (Admin only) |
+| :--- | :--- | :--- |
+| `POST` | `/api/account/register` | Register a new user |
+| `POST` | `/api/account/login` | Login and receive JWT token |
+| `GET` | `/api/products` | Get all products (with filtering/sorting) |
+| `GET` | `/api/products/{id}` | Get product by ID |
+| `GET` | `/api/products/categories`| Get all categories |
+| `POST` | `/api/basket` | Add item to cart |
+| `GET` | `/api/basket` | Get current user's cart |
+| `DELETE`| `/api/basket/{id}` | Remove item from cart |
+| `POST` | `/api/orders` | Place a new order |
+| `GET` | `/api/orders` | Get orders for current user |
+| `GET` | `/api/orders/{id}` | Get order by ID |
+| `GET` | `/api/admin/orders` | Get all orders (Admin only) |
+| `PATCH` | `/api/admin/orders/{id}/status` | Update order status (Admin only) |
 
-## Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
-
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
-- SQL Server (LocalDB is fine for local development)
-
-### Setup
+### Option A: Run with Docker (Recommended)
+The fastest way to spin up the API with its dependencies (SQL Server & Redis).
 
 ```bash
-# Clone the repository
-git clone https://github.com/tantawyahmed578-web/ECommerceApi.git
+# 1. Clone the repository
+git clone [https://github.com/tantawyahmed578-web/ECommerceApi.git](https://github.com/tantawyahmed578-web/ECommerceApi.git)
 cd ECommerceApi
 
-# Restore dependencies
-dotnet restore
-
-# Update the connection string in ECommerceApi/appsettings.json
-
-# Run migrations
-cd ECommerceApi
-dotnet ef database update --project ../ECommerceApi.Infrastructure --startup-project .
-
-# Run the project
-dotnet run
-```
-
-Swagger UI will be available at `https://localhost:<port>/swagger`
-
-## Architecture Notes
-
-- **Domain** layer has zero external dependencies — only pure C# entities and interfaces.
-- **Infrastructure** layer implements all persistence using EF Core with the Generic Repository and Specification patterns, keeping queries clean and reusable.
-- **Application** layer holds all business logic and communicates with Infrastructure only through interfaces — fully testable with mocks.
-- **API** layer wires everything via Dependency Injection and exposes REST endpoints with proper authorization policies.
-
-This design means business rules are completely decoupled from EF Core and SQL Server — the data layer could be swapped without touching the Application or Domain layers.
+# 2. Build and run the containers in detached mode
+docker compose up -d --build
