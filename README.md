@@ -8,7 +8,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/SQL_Server-EF_Core-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-Caching-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![Architecture](https://img.shields.io/badge/Architecture-Onion-00C7B7?style=for-the-badge)
+![Testing](https://img.shields.io/badge/Testing-xUnit_%7C_Moq-2088FF?style=for-the-badge&logo=testing-library&logoColor=white)
 
 </div>
 
@@ -25,7 +25,7 @@ This project provides a comprehensive backend solution for e-commerce applicatio
 * **🔒 Secure Authentication:** JWT-based authentication with role-based authorization (Admin/Customer).
 * **⚡ High Performance:** Caching integration via Redis to optimize read-heavy operations.
 * **🚦 Centralized Error Handling:** Global exception handling via .NET `IExceptionHandler` for consistent API responses.
-* **📝 Structured Logging:** Configured with Serilog for comprehensive tracking and debugging.
+* **🧪 Test-Driven Reliability:** Comprehensive unit testing for Domain and Application layers using **xUnit**, **Moq**, and **FluentAssertions** to ensure robust business logic.
 * **🛒 E-Commerce Workflows:** Full product catalog, category filtering, cart management, and order processing.
 
 ## 🛠️ Tech Stack
@@ -36,17 +36,8 @@ This project provides a comprehensive backend solution for e-commerce applicatio
 | **Data Access** | Entity Framework Core, SQL Server 2022 |
 | **Caching** | Redis (Alpine) |
 | **DevOps & Deployment** | Docker, Docker Compose |
+| **Testing** | xUnit, Moq, FluentAssertions |
 | **Libraries** | AutoMapper, Serilog, Swagger/OpenAPI |
-| **Testing** | xUnit |
-
-## 🏗️ Architecture
-
-The solution is divided into four strictly decoupled layers:
-
-1. **`Domain Layer`**: Contains entities and domain exceptions. *Zero external dependencies.*
-2. **`Application Layer`**: Contains business logic, DTOs, interfaces, and custom exceptions. *Depends only on Domain.*
-3. **`Infrastructure Layer`**: Implements EF Core, DbContext, and Repositories. *Depends on Domain & Application.*
-4. **`API Layer`**: The presentation layer containing Controllers, Middlewares, and DI wiring. *Depends on all layers.*
 
 ## 🚀 Getting Started
 
@@ -61,8 +52,8 @@ cd ECommerceApi
 # 2. Build and run the containers in detached mode
 docker compose up -d --build
 
-💻 Local Setup (Without Docker)
-Ensure you have local instances of SQL Server and Redis running on your machine, then execute the following commands:
+Option B: Local Setup (Without Docker)
+Ensure you have local instances of SQL Server and Redis running.
 
 Bash
 # 1. Restore dependencies
@@ -74,6 +65,11 @@ dotnet ef database update --project ../ECommerceApi.Infrastructure --startup-pro
 
 # 3. Run the application
 dotnet run
+🧪 Running Tests
+To verify the integrity of the core business logic and domain rules, execute the unit test suite:
+
+Bash
+dotnet test
 🌐 API Reference
 Account & Authentication
 
@@ -104,9 +100,3 @@ POST /api/orders - Place a new order
 GET /api/orders - Retrieve order history for the current user
 
 GET /api/orders/{id} - Retrieve specific order details
-
-Admin Operations (Requires Admin Role)
-
-GET /api/admin/orders - View all system orders
-
-PATCH /api/admin/orders/{id}/status - Update the fulfillment status of an order
