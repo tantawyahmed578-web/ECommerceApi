@@ -170,11 +170,10 @@ app.Use(async (context, next) =>
 });
 
 // --- Middleware pipeline ---
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ECommerce API v1"));
-}
+
 
 app.UseHttpsRedirection();
 
