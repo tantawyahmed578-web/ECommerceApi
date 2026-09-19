@@ -4,7 +4,6 @@ using ECommerceApi.Application.Services;
 using ECommerceApi.Domain.Interfaces;
 using ECommerceApi.Infrastructure.Persistence;
 using ECommerceApi.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using ECommerceApi.Infrastructure.Services;
@@ -13,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using StackExchange.Redis;
 using ECommerceApi.Middlewares;
+using Microsoft.EntityFrameworkCore;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +20,7 @@ builder.Host.UseSerilog();
 
 // --- Database (Day 3) ---
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // --- Unit of Work (Day 5) ---
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -34,6 +34,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
 // 1. تسجيل اتصال Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
@@ -47,7 +48,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!); 
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -56,7 +57,6 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -81,8 +81,8 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.Http,        // changed from ApiKey
-        Scheme = "Bearer",                     // NEW — tells Swagger to prepend "Bearer " automatically
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
         Description = "Paste ONLY the raw token here — no need to type Bearer, Swagger adds it for you."
@@ -110,10 +110,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        // تأكد من تغيير AppDbContext لاسم كلاس قاعدة البيانات الفعلي في مشروعك
         var context = services.GetRequiredService<AppDbContext>();
-
-        // هذا السطر يقوم بإنشاء الداتابيز وتطبيق كل الجداول تلقائياً
         context.Database.Migrate();
     }
     catch (Exception ex)
@@ -126,7 +123,6 @@ using (var scope = app.Services.CreateScope())
 app.UseExceptionHandler();
 
 app.UseSerilogRequestLogging();
-
 
 // --- Global Exception Handling Middleware ---
 app.Use(async (context, next) =>
@@ -172,6 +168,7 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsJsonAsync(response);
     }
 });
+
 // --- Middleware pipeline ---
 if (app.Environment.IsDevelopment())
 {
@@ -181,12 +178,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
-
