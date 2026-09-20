@@ -1,32 +1,29 @@
-﻿using ECommerceApi.Domain.Common;
+﻿// Domain/Entities/Customer.cs — عدّل السطور دي
+using ECommerceApi.Domain.Common;
+using ECommerceApi.Domain.Enums;
 using ECommerceApi.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ECommerceApi.Domain.Entities
+namespace ECommerceApi.Domain.Entities;
+
+public class Customer : BaseEntity
 {
-    public class Customer : BaseEntity
+    public string Name { get; private set; }
+    public string Email { get; private set; }
+    public string PasswordHash { get; private set; }
+    public UserRole Role { get; private set; } = UserRole.Customer;
+
+    private Customer() { }
+
+    public Customer(string name, string email, string passwordHash, UserRole role = UserRole.Customer)
     {
-        public string Name { get; private set; }
-        public string Email { get; private set; }
-        public string PasswordHash { get; private set; }
-        public string Role { get; set; } = "Customer";
+        if (string.IsNullOrWhiteSpace(name))
+            throw new DomainException("Customer name cannot be empty.");
+        if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+            throw new DomainException("A valid email is required.");
 
-        private Customer() { }
-
-        public Customer(string name, string email, string passwordHash)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new DomainException("Customer name cannot be empty."); // Validate that the name is not null or whitespace
-            if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
-                throw new DomainException("A valid email is required."); // Validate that the email is not null or whitespace and contains '@'
-
-            Name = name;
-            Email = email;
-            PasswordHash = passwordHash;
-        }
+        Name = name;
+        Email = email;
+        PasswordHash = passwordHash;
+        Role = role;
     }
 }

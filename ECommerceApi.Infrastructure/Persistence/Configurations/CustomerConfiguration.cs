@@ -16,7 +16,8 @@ namespace ECommerceApi.Infrastructure.Persistence.Configurations
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Name).IsRequired().HasMaxLength(150);
             builder.Property(c => c.Email).IsRequired().HasMaxLength(200);
-            builder.HasIndex(c => c.Email).IsUnique(); // no two customers share an email
+            builder.HasIndex(c => c.Email).IsUnique();
+            builder.Property(c => c.Role).HasConversion<string>();// no two customers share an email
         }
     }
 }

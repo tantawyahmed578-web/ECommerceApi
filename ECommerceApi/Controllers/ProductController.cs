@@ -57,6 +57,7 @@ namespace ECommerceApi.Controllers
         /// Creates a new product
         /// </summary>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto dto)
         {
             if (!ModelState.IsValid)
@@ -72,6 +73,7 @@ namespace ECommerceApi.Controllers
         /// Updates an existing product
         /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateProductDto dto)
         {
             if (!ModelState.IsValid) // Check if the model state is valid
@@ -93,6 +95,7 @@ namespace ECommerceApi.Controllers
         /// Deletes a product
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var existingProduct = await _productService.GetByIdAsync(id);
