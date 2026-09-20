@@ -1,102 +1,71 @@
-<div align="center">
+# 🛒 E-Commerce RESTful API (.NET Core)
 
-# 🛍️ E-Commerce REST API
+A fully-featured, scalable RESTful API for an E-commerce platform built with **ASP.NET Core (.NET 9)**. The project follows **Onion Architecture** to ensure a clean separation of concerns and is deployed live on **Railway** using **PostgreSQL** for primary data persistence and **Redis** for high-performance caching.
 
-*A robust, production-ready backend API for e-commerce platforms, built with ASP.NET Core 9 following the principles of Onion Architecture.*
-
-![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![SQL Server](https://img.shields.io/badge/SQL_Server-EF_Core-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-Caching-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![Testing](https://img.shields.io/badge/Testing-xUnit_%7C_Moq-2088FF?style=for-the-badge&logo=testing-library&logoColor=white)
-
-</div>
+🚀 **[Live Demo (Swagger UI) - Test it here!](https://lavish-tenderness-production-08cd.up.railway.app/swagger/index.html)**
 
 ---
 
-## 📋 Overview
+## 🛠️ Tech Stack & Technologies
 
-This project provides a comprehensive backend solution for e-commerce applications. By enforcing **Onion Architecture**, it ensures a clean separation of concerns, resulting in a highly testable, maintainable, and scalable system where the core business logic is completely isolated from external frameworks and infrastructure.
+* **Framework:** .NET 9, ASP.NET Core Web API
+* **Architecture:** Onion Architecture / Clean Architecture, Generic Repository Pattern, Unit of Work
+* **Databases:** PostgreSQL (Relational Data), Redis (In-Memory Data Store for Shopping Basket)
+* **ORM:** Entity Framework Core (EF Core)
+* **Security:** JWT (JSON Web Tokens), BCrypt Password Hashing, Role-Based Authorization
+* **Validation & Error Handling:** FluentValidation, Global Exception Handling Middleware
+* **Mapping & Logging:** AutoMapper, Serilog
+* **Deployment & DevOps:** Railway, Docker, Docker Compose, GitHub
+
+---
 
 ## ✨ Key Features
 
-* **📦 Containerized Environment:** Fully orchestrated setup for the API, SQL Server 2022, and Redis using Docker Compose.
-* **🛡️ Clean Architecture:** Strict adherence to Onion Architecture, utilizing Generic Repository and Specification patterns.
-* **🔒 Secure Authentication:** JWT-based authentication with role-based authorization (Admin/Customer).
-* **⚡ High Performance:** Caching integration via Redis to optimize read-heavy operations.
-* **🚦 Centralized Error Handling:** Global exception handling via .NET `IExceptionHandler` for consistent API responses.
-* **🧪 Test-Driven Reliability:** Comprehensive unit testing for Domain and Application layers using **xUnit**, **Moq**, and **FluentAssertions** to ensure robust business logic.
-* **🛒 E-Commerce Workflows:** Full product catalog, category filtering, cart management, and order processing.
+* **Authentication & Authorization:** Secure user registration and login using JWT.
+* **Product Catalog:** Fetch products with pagination, filtering, and search functionalities optimized at the database level.
+* **Redis Shopping Basket:** High-performance caching for user shopping carts with automatic expiration.
+* **Secure Checkout System:** Re-validates prices and stock directly from the database at checkout to prevent client-side data tampering.
+* **Atomic Transactions:** Uses the Unit of Work pattern to ensure that stock deduction, order creation, and basket clearing succeed or fail together as a single transaction.
 
-## 🛠️ Tech Stack
+---
 
-| Category | Technology |
-|---|---|
-| **Core Framework** | ASP.NET Core Web API (.NET 9) |
-| **Data Access** | Entity Framework Core, SQL Server 2022 |
-| **Caching** | Redis (Alpine) |
-| **DevOps & Deployment** | Docker, Docker Compose |
-| **Testing** | xUnit, Moq, FluentAssertions |
-| **Libraries** | AutoMapper, Serilog, Swagger/OpenAPI |
+## 🧪 How to Test the Live API
 
-## 🚀 Getting Started
+You can test the API directly using the [Live Swagger Documentation](https://lavish-tenderness-production-08cd.up.railway.app/swagger/index.html). Follow these steps:
 
-### Option A: Run with Docker (Recommended)
-The fastest way to spin up the API with its dependencies (SQL Server & Redis).
+1. **Register/Login:** Go to `POST /api/Auth/register` to create a new user, then use `POST /api/Auth/login` to get your JWT Token.
+2. **Authorize:** Copy the token, scroll to the top of the Swagger page, click the **Authorize** (lock) button, and paste the token.
+3. **Explore Products:** Use `GET /api/Products` to view the available catalog.
+4. **Update Basket:** Use `POST /api/Basket` to add a product to your Redis-backed cart.
+5. **Place an Order:** Use `POST /api/Orders` to checkout and convert your basket into a confirmed order stored in PostgreSQL.
 
-```bash
-# 1. Clone the repository
-git clone [https://github.com/tantawyahmed578-web/ECommerceApi.git](https://github.com/tantawyahmed578-web/ECommerceApi.git)
-cd ECommerceApi
+---
 
-# 2. Build and run the containers in detached mode
-docker compose up -d --build
+## 💻 Local Development Setup
 
-Option B: Local Setup (Without Docker)
-Ensure you have local instances of SQL Server and Redis running.
+If you want to run this project locally on your machine:
 
-Bash
-# 1. Restore dependencies
-dotnet restore
+### Prerequisites
+* [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+* [Docker Desktop](https://www.docker.com/products/docker-desktop) (For PostgreSQL and Redis containers)
 
-# 2. Apply database migrations
-cd ECommerceApi
-dotnet ef database update --project ../ECommerceApi.Infrastructure --startup-project .
+### Steps
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/your-username/ECommerce-API-DotNet.git](https://github.com/your-
+   username/ECommerce-API-DotNet.git)
+   cd ECommerce-API-DotNet
 
-# 3. Run the application
-dotnet run
-🧪 Running Tests
-To verify the integrity of the core business logic and domain rules, execute the unit test suite:
 
-Bash
-dotnet test
-🌐 API Reference
-Account & Authentication
+   Run Infrastructure via Docker:
+Ensure Docker is running, then start the PostgreSQL and Redis containers:
+    docker-compose up -d
 
-POST /api/Auth/register - Register a new user account
+    📐 Architecture Overview (Onion Architecture)
+Domain Layer: Contains Enterprise Logic, Entities, and Interfaces. (No external dependencies).
 
-POST /api/Auth/login - Authenticate and retrieve JWT token
+Application Layer: Contains Business Logic, DTOs, Mapping profiles, and Validation. (Depends only on Domain).
 
-Product Catalog
+Infrastructure Layer: Contains Data Access, EF Core DbContext, Repositories, and External Service Implementations.
 
-GET /api/Product - Retrieve all products (Supports pagination, filtering, and sorting)
-
-GET /api/Product/{id} - Retrieve product details
-
-GET /api/Categories - Retrieve available categories
-
-Basket / Cart
-
-POST /api/basket - Add or update an item in the cart
-
-GET /api/basket - Retrieve the current user's cart
-
-DELETE /api/basket/{id} - Remove an item from the cart
-
-Orders & Checkout
-
-POST /api/orders - Place a new order
-
-GET /api/orders - Retrieve order history for the current user
-
-GET /api/orders/{id} - Retrieve specific order details
+API Layer: The presentation layer containing Controllers, Middlewares, and dependency injection setup.
